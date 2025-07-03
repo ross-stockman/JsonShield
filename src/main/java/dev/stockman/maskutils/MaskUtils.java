@@ -16,16 +16,19 @@ import java.util.Objects;
 public class MaskUtils {
 
     private final ObjectMapper mapper;
+    private final MaskingConfiguration maskingConfiguration;
     private static final String MASK = "*****";
 
     /**
      * Constructs a new MaskUtils instance.
      *
      * @param mapper the ObjectMapper to be used for JSON processing
-     * @throws NullPointerException if mapper is null
+     * @param maskingConfiguration the MaskingConfiguration to be used for masking rules
+     * @throws NullPointerException if mapper or maskingConfiguration is null
      */
-    public MaskUtils(ObjectMapper mapper) {
+    public MaskUtils(ObjectMapper mapper, MaskingConfiguration maskingConfiguration) {
         this.mapper = Objects.requireNonNull(mapper, "ObjectMapper cannot be null");
+        this.maskingConfiguration = Objects.requireNonNull(maskingConfiguration, "MaskingConfiguration cannot be null");
     }
 
     private JsonNode validate(String json) {
@@ -47,7 +50,7 @@ public class MaskUtils {
     private JsonNode mask(JsonNode node) {
         Objects.requireNonNull(node, "Input JsonNode cannot be null");
         try {
-            return maskNode(node);
+            return maskNode(node, "");
         } catch (Exception e) {
             throw new JsonMaskingException("Error masking JsonNode", e);
         }
@@ -101,13 +104,13 @@ public class MaskUtils {
     }
 
 
-    private JsonNode maskNode(JsonNode node) {
+    private JsonNode maskNode(JsonNode node, String parentNodeName) {
         if (node.isNull()) {
             return NullNode.getInstance();
         } else if (node.isObject()) {
             return maskObject(node);
         } else if (node.isArray()) {
-            return maskArray(node);
+            return maskArray(node, parentNodeName);
         } else if (node.isBoolean()) {
             return BooleanNode.valueOf(false);
         } else if (node.isNumber()) {
@@ -127,17 +130,41 @@ public class MaskUtils {
 
     private JsonNode maskObject(JsonNode node) {
         ObjectNode maskedObject = mapper.createObjectNode();
-        node.fieldNames().forEachRemaining(fieldName ->
-                maskedObject.set(fieldName, maskNode(node.get(fieldName)))
+        node.fieldNames().forEachRemaining(fieldName -> {
+                    JsonNode fieldNode = node.get(fieldName);
+                    if (fieldNode.isArray() && maskingConfiguration.shouldMask(fieldName)) {
+                        maskedObject.set(fieldName, maskNode(fieldNode, fieldName));
+                    } else {
+                        boolean isValueNode = fieldNode.isValueNode();
+                        if (!isValueNode || maskingConfiguration.shouldMask(fieldName)) {
+                            maskedObject.set(fieldName, maskNode(fieldNode, fieldName));
+                        } else {
+                            maskedObject.set(fieldName, fieldNode);
+                        }
+                    }
+                }
         );
         return maskedObject;
     }
 
-    private JsonNode maskArray(JsonNode node) {
+    private JsonNode maskArray(JsonNode node, String fieldName) {
         ArrayNode maskedArray = mapper.createArrayNode();
-        node.elements().forEachRemaining(element ->
-                maskedArray.add(maskNode(element))
-        );
+        node.elements().forEachRemaining(element -> {
+            boolean isValueNode = element.isValueNode();
+            if (!isValueNode) {
+                if (element.isArray()) {
+                    maskedArray.add(maskNode(element, fieldName));
+                } else {
+                    maskedArray.add(maskNode(element, ""));
+                }
+            } else {
+                if (maskingConfiguration.shouldMask(fieldName)) {
+                    maskedArray.add(maskNode(element, fieldName));
+                } else {
+                    maskedArray.add(element);
+                }
+            }
+        });
         return maskedArray;
     }
 }
