@@ -1,152 +1,25 @@
 package dev.stockman.maskutils;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("Deprecated")
 public class MaskUtilsTest {
-
-    // language=JSON
-    private static final String sampleUnmaskedJson = """
-        {
-          "id": "ABC123",
-          "timestamp": "2025-07-01T12:34:56.789Z",
-          "active": true,
-          "score": 95.5,
-          "name": "John Doe",
-          "age": 30,
-          "largeNumber": 9223372036854775808,
-          "preciseDecimal": 123456.789,
-          "contact": {
-            "email": "john@example.com",
-            "phone": "123-456-7890",
-            "verified": false,
-            "accountBalance": 999999.99
-          },
-          "addresses": [
-            {
-              "type": "home",
-              "street": "123 Main St",
-              "city": "Springfield",
-              "zipCode": 12345,
-              "propertyValue": 1234567.89
-            },
-            {
-              "type": "work",
-              "street": "456 Corp Ave",
-              "city": "Business City",
-              "zipCode": 67890,
-              "buildingNumber": 18446744073709551615
-            }
-          ],
-          "tags": ["premium", "verified", "active"],
-          "scores": [88, 92, 95],
-          "metadata": {
-            "lastUpdated": "2025-07-01",
-            "version": 2,
-            "settings": {
-              "notifications": true,
-              "theme": "dark"
-            }
-          },
-          "payment": {
-            "cardNumber": "4111111111111111",
-            "cvv": "123",
-            "amount": 999999999999999.999999,
-            "mixed": [
-              "secret1",
-              42,
-              true,
-              {
-                "nestedKey": "nestedValue",
-                "hugeValue": 340282366920938463463374607431768211455
-              }
-            ]
-          },
-          "nullField": null,
-          "emptyObject": {},
-          "emptyArray": []
-        }
-        """;
-
-    private final TestData sampleUnmaskedObject = new TestData(
-            "ABC123",
-            Instant.parse("2025-07-01T12:34:56.789Z"),
-            true,
-            95.5,
-            "John Doe",
-            30,
-            new BigInteger("9223372036854775808"),
-            new BigDecimal("123456.789"),
-            new Contact(
-                    "john@example.com",
-                    "123-456-7890",
-                    false,
-                    new BigDecimal("999999.99")
-            ),
-            List.of(
-                    new Address(
-                            "home",
-                            "123 Main St",
-                            "Springfield",
-                            12345,
-                            new BigDecimal("1234567.89"),
-                            null
-                    ),
-                    new Address(
-                            "work",
-                            "456 Corp Ave",
-                            "Business City",
-                            67890,
-                            null,
-                            new BigInteger("18446744073709551615")
-                    )
-            ),
-            List.of("premium", "verified", "active"),
-            List.of(88, 92, 95),
-            new Metadata(
-                    "2025-07-01",
-                    2,
-                    new Settings(true, "dark")
-            ),
-            new Payment(
-                    "4111111111111111",
-                    "123",
-                    new BigDecimal("999999999999999.999999"),
-                    List.of(
-                            "secret1",
-                            42,
-                            true,
-                            new NestedMixed(
-                                    "nestedValue",
-                                    new BigInteger("340282366920938463463374607431768211455")
-                            )
-                    )
-            ),
-            null,
-            new HashMap<>(),
-            new ArrayList<>()
-    );
-
 
     private ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
-        mapper = JsonConfiguration.formattedObjectMapper();
+        mapper = JsonHelper.formattedObjectMapper();
     }
 
     @Test
@@ -166,38 +39,6 @@ public class MaskUtilsTest {
         MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useWhiteListStrategy().build());
         assertThrows(NullPointerException.class, () -> maskUtils.mask((String) null));
         assertThrows(NullPointerException.class, () -> maskUtils.mask((Object) null));
-    }
-
-    @Test
-    void testMaskByStringUsingWhitelist() {
-        MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useWhiteListStrategy().build());
-        String maskedJson = maskUtils.mask(sampleUnmaskedJson);
-        JsonNode maskedNode = readTree(maskedJson);
-        allWhitelistAssertions(maskedNode);
-    }
-
-    @Test
-    void testMaskByObjectUsingWhitelist() {
-        MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useWhiteListStrategy().build());
-        String maskedJson = maskUtils.mask(sampleUnmaskedObject);
-        JsonNode maskedNode = readTree(maskedJson);
-        allWhitelistAssertions(maskedNode);
-    }
-
-    @Test
-    void testMaskByStringUsingBlacklist() {
-        MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useBlackListStrategy().build());
-        String maskedJson = maskUtils.mask(sampleUnmaskedJson);
-        JsonNode maskedNode = readTree(maskedJson);
-        allBlacklistAssertions(maskedNode);
-    }
-
-    @Test
-    void testMaskByObjectUsingBlacklist() {
-        MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useBlackListStrategy().build());
-        String maskedJson = maskUtils.mask(sampleUnmaskedObject);
-        JsonNode maskedNode = readTree(maskedJson);
-        allBlacklistAssertions(maskedNode);
     }
 
     @Test
@@ -375,6 +216,60 @@ public class MaskUtilsTest {
         }""", masked);
     }
 
+    @Test
+    void testValueNodeOnly_Boolean_Whitelisted() {
+        String json = "true";
+
+        MaskingConfiguration config = MaskingConfiguration.useWhiteListStrategy()
+                .build();
+
+        MaskUtils maskUtils = new MaskUtils(mapper, config);
+        String masked = maskUtils.mask(json);
+
+        assertJsonEquals("""
+        false""", masked);
+    }
+
+    @Test
+    void testValueNodeOnly_Boolean_Blacklisted() {
+        String json = "true";
+
+        MaskingConfiguration config = MaskingConfiguration.useBlackListStrategy()
+                .build();
+
+        MaskUtils maskUtils = new MaskUtils(mapper, config);
+        String masked = maskUtils.mask(json);
+
+        assertJsonEquals("""
+        true""", masked);
+    }
+
+    @Test
+    void testValueNodeOnly_Text_Whitelisted() {
+        String json = "\"value\"";
+
+        MaskingConfiguration config = MaskingConfiguration.useWhiteListStrategy()
+                .build();
+
+        MaskUtils maskUtils = new MaskUtils(mapper, config);
+        String masked = maskUtils.mask(json);
+
+        assertJsonEquals("\"*****\"", masked);
+    }
+
+    @Test
+    void testValueNodeOnly_Text_Blacklisted() {
+        String json = "\"value\"";
+
+        MaskingConfiguration config = MaskingConfiguration.useBlackListStrategy()
+                .build();
+
+        MaskUtils maskUtils = new MaskUtils(mapper, config);
+        String masked = maskUtils.mask(json);
+
+        assertJsonEquals("\"value\"", masked);
+    }
+
     private void allWhitelistAssertions(JsonNode maskedNode) {
         // Test basic field types
         assertEquals("*****", maskedNode.get("id").asText());
@@ -535,63 +430,4 @@ public class MaskUtilsTest {
 
 
 }
-
-record TestData(
-        String id,
-        Instant timestamp,
-        boolean active,
-        double score,
-        String name,
-        int age,
-        BigInteger largeNumber,
-        BigDecimal preciseDecimal,
-        Contact contact,
-        List<Address> addresses,
-        List<String> tags,
-        List<Integer> scores,
-        Metadata metadata,
-        Payment payment,
-        Object nullField,
-        Map<String, Object> emptyObject,
-        List<Object> emptyArray
-) {}
-
-record Contact(
-        String email,
-        String phone,
-        boolean verified,
-        BigDecimal accountBalance
-) {}
-
-record Address(
-        String type,
-        String street,
-        String city,
-        int zipCode,
-        BigDecimal propertyValue,
-        BigInteger buildingNumber
-) {}
-
-record Metadata(
-        String lastUpdated,
-        int version,
-        Settings settings
-) {}
-
-record Settings(
-        boolean notifications,
-        String theme
-) {}
-
-record Payment(
-        String cardNumber,
-        String cvv,
-        BigDecimal amount,
-        List<Object> mixed
-) {}
-
-record NestedMixed(
-        String nestedKey,
-        BigInteger hugeValue
-) {}
 

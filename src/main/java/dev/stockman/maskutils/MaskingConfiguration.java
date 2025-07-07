@@ -31,6 +31,14 @@ public class MaskingConfiguration {
     }
 
     /**
+     * Determines if the root of a JSON object should be masked based on the masking strategy.
+     * @return true if the root should be masked, false if it should be unmasked
+     */
+    public boolean shouldMaskScalarRoot() {
+        return strategy == Strategy.WHITELIST;
+    }
+
+    /**
      * Creates a builder for whitelist strategy where only specified fields will be shown unmasked.
      * @return a new builder instance configured for whitelist strategy
      */

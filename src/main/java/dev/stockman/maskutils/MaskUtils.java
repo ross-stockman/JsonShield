@@ -99,7 +99,7 @@ public class MaskUtils {
     public String mask(Object obj) {
         Objects.requireNonNull(obj, "Input Object cannot be null");
         JsonNode rootNode = mapper.valueToTree(obj);
-        JsonNode maskedNode = mask(rootNode);
+        JsonNode maskedNode = !rootNode.isValueNode() ? mask(rootNode) : maskingConfiguration.shouldMaskScalarRoot() ? mask(rootNode) : rootNode;
         return writeValueAsString(maskedNode);
     }
 
@@ -122,6 +122,19 @@ public class MaskUtils {
         return node;
     }
 
+    private JsonNode maskValueNode(JsonNode node) {
+        if (node.isNull()) {
+            return NullNode.getInstance();
+        } else if (node.isBoolean()) {
+            return BooleanNode.valueOf(false);
+        } else if (node.isNumber()) {
+            return maskNumeric(node);
+        } else if (node.isTextual()) {
+            return TextNode.valueOf(MASK);
+        }
+        return node;
+    }
+
     private JsonNode maskNumeric(JsonNode node) {
         return node.isBigDecimal() || node.isFloatingPointNumber()
                 ? DecimalNode.valueOf(BigDecimal.valueOf(0.0))
@@ -131,40 +144,34 @@ public class MaskUtils {
     private JsonNode maskObject(JsonNode node) {
         ObjectNode maskedObject = mapper.createObjectNode();
         node.fieldNames().forEachRemaining(fieldName -> {
-                    JsonNode fieldNode = node.get(fieldName);
-                    if (fieldNode.isArray() && maskingConfiguration.shouldMask(fieldName)) {
-                        maskedObject.set(fieldName, maskNode(fieldNode, fieldName));
-                    } else {
-                        boolean isValueNode = fieldNode.isValueNode();
-                        if (!isValueNode || maskingConfiguration.shouldMask(fieldName)) {
-                            maskedObject.set(fieldName, maskNode(fieldNode, fieldName));
-                        } else {
-                            maskedObject.set(fieldName, fieldNode);
-                        }
-                    }
-                }
-        );
+            JsonNode fieldNode = node.get(fieldName);
+            maskedObject.set(fieldName, determineNodeMask(fieldNode, fieldName));
+        });
         return maskedObject;
     }
 
+
     private JsonNode maskArray(JsonNode node, String fieldName) {
         ArrayNode maskedArray = mapper.createArrayNode();
-        node.elements().forEachRemaining(element -> {
-            boolean isValueNode = element.isValueNode();
-            if (!isValueNode) {
-                if (element.isArray()) {
-                    maskedArray.add(maskNode(element, fieldName));
-                } else {
-                    maskedArray.add(maskNode(element, ""));
-                }
-            } else {
-                if (maskingConfiguration.shouldMask(fieldName)) {
-                    maskedArray.add(maskNode(element, fieldName));
-                } else {
-                    maskedArray.add(element);
-                }
-            }
-        });
+        node.elements().forEachRemaining(element ->
+                maskedArray.add(determineNodeMask(element, fieldName))
+        );
         return maskedArray;
     }
+
+    private JsonNode determineNodeMask(JsonNode node, String fieldName) {
+        if (node.isValueNode()) {
+            return maskingConfiguration.shouldMask(fieldName) ?
+                    maskValueNode(node) :
+                    node;
+        }
+
+        if (node.isArray()) {
+            return maskNode(node, fieldName);
+        }
+
+        // For objects, we don't pass the parent field name down
+        return maskNode(node, "");
+    }
+
 }
