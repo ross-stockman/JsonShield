@@ -159,6 +159,54 @@ public abstract class AbstractJsonShieldTest {
         }
 
         @Test
+        @DisplayName("Null masks")
+        void testNullMasks() {
+            //language=json
+            String input = """
+                    {
+                      "string" : "test",
+                      "boolean" : true,
+                      "integer" : 1,
+                      "float" : 1.1,
+                      "object" : {
+                        "string" : "test",
+                        "boolean" : true,
+                        "integer" : 1,
+                        "float" : 1.1
+                      },
+                      "array" : [
+                        "test",
+                        true,
+                        1,
+                        1.1
+                      ]
+                    }""";
+            //language=json
+            String output = """
+                    {
+                      "string" : null,
+                      "boolean" : null,
+                      "integer" : null,
+                      "float" : null,
+                      "object" : {
+                        "string" : null,
+                        "boolean" : null,
+                        "integer" : null,
+                        "float" : null
+                      },
+                      "array" : [
+                        null,
+                        null,
+                        null,
+                        null
+                      ]
+                    }""";
+
+            JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useWhiteListStrategy().withBooleanMask(null).withDecimalMask(null).withNumberMask(null).withStringMask(null).build());
+            jsonAssertEquals(output, maskUtils.mask(input));
+        }
+
+        @Test
         @DisplayName("Array of object values")
         void testArrayOfObjectValues() {
             //language=json
@@ -643,6 +691,54 @@ public abstract class AbstractJsonShieldTest {
 
             JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useBlackListStrategy().build());
             jsonAssertEquals(input, maskUtils.mask(input));
+        }
+
+        @Test
+        @DisplayName("Null masks")
+        void testNullMasks() {
+            //language=json
+            String input = """
+                    {
+                      "string" : "test",
+                      "boolean" : true,
+                      "integer" : 1,
+                      "float" : 1.1,
+                      "object" : {
+                        "string" : "test",
+                        "boolean" : true,
+                        "integer" : 1,
+                        "float" : 1.1
+                      },
+                      "array" : [
+                        "test",
+                        true,
+                        1,
+                        1.1
+                      ]
+                    }""";
+            //language=json
+            String output = """
+                    {
+                      "string" : null,
+                      "boolean" : null,
+                      "integer" : null,
+                      "float" : null,
+                      "object" : {
+                        "string" : null,
+                        "boolean" : null,
+                        "integer" : null,
+                        "float" : null
+                      },
+                      "array" : [
+                        null,
+                        null,
+                        null,
+                        null
+                      ]
+                    }""";
+
+            JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useBlackListStrategy().addField("string").addField("boolean").addField("float").addField("integer").addField("array").withBooleanMask(null).withDecimalMask(null).withNumberMask(null).withStringMask(null).build());
+            jsonAssertEquals(output, maskUtils.mask(input));
         }
 
         @Test

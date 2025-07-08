@@ -9,10 +9,18 @@ import java.util.*;
 public class JsonShieldConfiguration {
     private final Set<String> fields;
     private final Strategy strategy;
+    private final String stringMask;
+    private final Double decimalMask;
+    private final Boolean booleanMask;
+    private final Integer numberMask;
 
     private JsonShieldConfiguration(Builder builder) {
         this.fields = Set.copyOf(builder.fields);
         this.strategy = builder.strategy;
+        this.stringMask = builder.stringMask;
+        this.decimalMask = builder.decimalMask;
+        this.booleanMask = builder.booleanMask;
+        this.numberMask = builder.numberMask;
     }
 
     /**
@@ -33,6 +41,43 @@ public class JsonShieldConfiguration {
      */
     public boolean shouldMaskScalarRoot() {
         return strategy == Strategy.WHITELIST;
+    }
+
+    /**
+     * Retrieves the string value used for masking textual fields.
+     *
+     * @return the string mask applied to string fields during masking
+     */
+    public String getStringMask() {
+        return stringMask;
+    }
+
+    /**
+     * Retrieves the decimal value used for masking fields with decimal values.
+     * This value is applied to fields of type Double during the masking process.
+     *
+     * @return the decimal mask applied to decimal fields
+     */
+    public Double getDecimalMask() {
+        return decimalMask;
+    }
+
+    /**
+     * Retrieves the boolean value used for masking Boolean fields.
+     *
+     * @return the boolean mask applied to Boolean fields during masking
+     */
+    public Boolean getBooleanMask() {
+        return booleanMask;
+    }
+
+    /**
+     * Retrieves the integer value used for masking number fields.
+     *
+     * @return the number mask applied to integer fields during masking
+     */
+    public Integer getNumberMask() {
+        return numberMask;
     }
 
     /**
@@ -57,6 +102,11 @@ public class JsonShieldConfiguration {
     public static class Builder {
         private final Set<String> fields = new HashSet<>();
         private final Strategy strategy;
+        private String stringMask = MaskConstants.DEFAULT_STRING_MASK;
+        private Integer numberMask = MaskConstants.DEFAULT_NUMBER_MASK;
+        private Boolean booleanMask = MaskConstants.DEFAULT_BOOLEAN_MASK;
+        private Double decimalMask = MaskConstants.DEFAULT_DECIMAL_MASK;
+
         Builder(Strategy strategy) {
             this.strategy = strategy;
         }
@@ -88,6 +138,46 @@ public class JsonShieldConfiguration {
          */
         public Builder addFields(Collection<String> fieldNames) {
             fields.addAll(fieldNames);
+            return this;
+        }
+
+        /**
+         * Sets the String to be used when masking a textual field
+         * @param stringMask the string to use
+         * @return the current builder instance, for method chaining
+         */
+        public Builder withStringMask(String stringMask) {
+            this.stringMask = stringMask;
+            return this;
+        }
+
+        /**
+         * Sets the number to be used when masking an integer field
+         * @param numberMask the number to use
+         * @return the current builder instance, for method chaining
+         */
+        public Builder withNumberMask(Integer numberMask) {
+            this.numberMask = numberMask;
+            return this;
+        }
+
+        /**
+         * Sets the boolean to be used when masking a boolean field
+         * @param booleanMask the boolean to use
+         * @return the current builder instance, for method chaining
+         */
+        public Builder withBooleanMask(Boolean booleanMask) {
+            this.booleanMask = booleanMask;
+            return this;
+        }
+
+        /**
+         * Sets the double to be used when masking a decimal field
+         * @param decimalMask the decimal to use
+         * @return the current builder instance, for method chaining
+         */
+        public Builder withDecimalMask(Double decimalMask) {
+            this.decimalMask = decimalMask;
             return this;
         }
 

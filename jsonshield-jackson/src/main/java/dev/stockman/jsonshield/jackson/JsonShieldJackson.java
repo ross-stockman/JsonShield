@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.*;
-import dev.stockman.jsonshield.core.InvalidJsonException;
-import dev.stockman.jsonshield.core.JsonShieldException;
-import dev.stockman.jsonshield.core.JsonShield;
-import dev.stockman.jsonshield.core.JsonShieldConfiguration;
+import dev.stockman.jsonshield.core.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -93,19 +90,19 @@ public class JsonShieldJackson implements JsonShield {
         if (node.isNull()) {
             return NullNode.getInstance();
         } else if (node.isBoolean()) {
-            return BooleanNode.valueOf(false);
+            return jsonShieldConfiguration.getBooleanMask() == null ? NullNode.getInstance() : BooleanNode.valueOf(jsonShieldConfiguration.getBooleanMask());
         } else if (node.isNumber()) {
             return maskNumeric(node);
         } else if (node.isTextual()) {
-            return TextNode.valueOf(MASK);
+            return jsonShieldConfiguration.getStringMask() == null ? NullNode.getInstance() : TextNode.valueOf(jsonShieldConfiguration.getStringMask());
         }
         return node;
     }
 
     private JsonNode maskNumeric(JsonNode node) {
         return node.isBigDecimal() || node.isFloatingPointNumber()
-                ? DecimalNode.valueOf(BigDecimal.valueOf(0.0))
-                : IntNode.valueOf(0);
+                ? jsonShieldConfiguration.getDecimalMask() == null ? NullNode.getInstance() : DecimalNode.valueOf(BigDecimal.valueOf(jsonShieldConfiguration.getDecimalMask()))
+                : jsonShieldConfiguration.getNumberMask() == null ? NullNode.getInstance() : IntNode.valueOf(jsonShieldConfiguration.getNumberMask());
     }
 
     private JsonNode maskObject(JsonNode node) {

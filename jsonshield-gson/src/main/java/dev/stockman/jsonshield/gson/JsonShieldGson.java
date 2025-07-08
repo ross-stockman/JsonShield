@@ -1,10 +1,7 @@
 package dev.stockman.jsonshield.gson;
 
 import com.google.gson.*;
-import dev.stockman.jsonshield.core.InvalidJsonException;
-import dev.stockman.jsonshield.core.JsonShieldException;
-import dev.stockman.jsonshield.core.JsonShield;
-import dev.stockman.jsonshield.core.JsonShieldConfiguration;
+import dev.stockman.jsonshield.core.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -86,11 +83,11 @@ public class JsonShieldGson implements JsonShield {
         } else if (element.isJsonPrimitive()) {
             JsonPrimitive primitive = element.getAsJsonPrimitive();
             if (primitive.isBoolean()) {
-                return new JsonPrimitive(false);
+                return jsonShieldConfiguration.getBooleanMask() == null ? JsonNull.INSTANCE : new JsonPrimitive(jsonShieldConfiguration.getBooleanMask());
             } else if (primitive.isNumber()) {
                 return maskNumeric(primitive);
             } else if (primitive.isString()) {
-                return new JsonPrimitive(MASK);
+                return jsonShieldConfiguration.getStringMask() == null ? JsonNull.INSTANCE : new JsonPrimitive(jsonShieldConfiguration.getStringMask());
             }
         }
         return element;
@@ -98,9 +95,9 @@ public class JsonShieldGson implements JsonShield {
 
     private JsonElement maskNumeric(JsonPrimitive element) {
         String numStr = element.getAsString();
-        return numStr.contains(".") ?
-                new JsonPrimitive(BigDecimal.valueOf(0.0)) :
-                new JsonPrimitive(0);
+        return numStr.contains(".")
+                ? jsonShieldConfiguration.getDecimalMask() == null ? JsonNull.INSTANCE : new JsonPrimitive(BigDecimal.valueOf(jsonShieldConfiguration.getDecimalMask()))
+                : jsonShieldConfiguration.getNumberMask() == null ? JsonNull.INSTANCE : new JsonPrimitive(jsonShieldConfiguration.getNumberMask());
     }
 
     private JsonElement maskObject(JsonObject object) {
