@@ -161,7 +161,7 @@ public class MaskUtilsComplexSchemaTest {
         @Test
         @DisplayName("Using JSON string")
         void testMaskByStringUsing() {
-            MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useWhiteListStrategy().build());
+            MaskUtils maskUtils = new MaskUtilsJackson(mapper, MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask(sampleUnmaskedJson);
             JsonNode maskedNode = readTree(mapper, maskedJson);
             allWhitelistAssertions(maskedNode);
@@ -170,7 +170,7 @@ public class MaskUtilsComplexSchemaTest {
         @Test
         @DisplayName("Using Java objects")
         void testMaskByObjectUsing() {
-            MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useWhiteListStrategy().build());
+            MaskUtils maskUtils = new MaskUtilsJackson(mapper, MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask(sampleUnmaskedObject);
             JsonNode maskedNode = readTree(mapper, maskedJson);
             allWhitelistAssertions(maskedNode);
@@ -252,7 +252,7 @@ public class MaskUtilsComplexSchemaTest {
         @Test
         @DisplayName("Using JSON string")
         void testMaskByStringUsing() {
-            MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useBlackListStrategy().build());
+            MaskUtils maskUtils = new MaskUtilsJackson(mapper, MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask(sampleUnmaskedJson);
             JsonNode maskedNode = readTree(mapper, maskedJson);
             allBlacklistAssertions(maskedNode);
@@ -261,7 +261,7 @@ public class MaskUtilsComplexSchemaTest {
         @Test
         @DisplayName("Using Java objects")
         void testMaskByObjectUsing() {
-            MaskUtils maskUtils = new MaskUtils(mapper, MaskingConfiguration.useBlackListStrategy().build());
+            MaskUtils maskUtils = new MaskUtilsJackson(mapper, MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask(sampleUnmaskedObject);
             JsonNode maskedNode = readTree(mapper, maskedJson);
             allBlacklistAssertions(maskedNode);

@@ -13,8 +13,7 @@ import java.util.Objects;
  * Provides methods to mask both JSON strings and JsonNode objects,
  * replacing values with predefined masks while preserving the JSON structure.
  */
-@Deprecated
-public class MaskUtilsDeprecated {
+public class MaskUtilsJackson implements MaskUtils {
 
     private final ObjectMapper mapper;
     private final MaskingConfiguration maskingConfiguration;
@@ -27,7 +26,7 @@ public class MaskUtilsDeprecated {
      * @param maskingConfiguration the MaskingConfiguration to be used for masking rules
      * @throws NullPointerException if mapper or maskingConfiguration is null
      */
-    public MaskUtilsDeprecated(ObjectMapper mapper, MaskingConfiguration maskingConfiguration) {
+    public MaskUtilsJackson(ObjectMapper mapper, MaskingConfiguration maskingConfiguration) {
         this.mapper = Objects.requireNonNull(mapper, "ObjectMapper cannot be null");
         this.maskingConfiguration = Objects.requireNonNull(maskingConfiguration, "MaskingConfiguration cannot be null");
     }
@@ -57,23 +56,7 @@ public class MaskUtilsDeprecated {
         }
     }
 
-    /**
-     * Masks sensitive data in a JSON string by replacing values with predefined masks.
-     * The following masking rules are applied:
-     * <ul>
-     *     <li>String values are replaced with "*****"</li>
-     *     <li>Numbers are replaced with 0 (integers) or 0.0 (floating-point)</li>
-     *     <li>Boolean values are replaced with false</li>
-     *     <li>Null values remain null</li>
-     *     <li>Arrays and objects are traversed recursively</li>
-     * </ul>
-     *
-     * @param json the JSON string to be masked
-     * @return a new JSON string with masked values
-     * @throws NullPointerException if the input JSON string is null
-     * @throws InvalidJsonException if the input is not valid JSON
-     * @throws JsonMaskingException if an error occurs during the masking process
-     */
+    @Override
     public String mask(String json) {
         Objects.requireNonNull(json, "Input JSON string cannot be null");
         JsonNode rootNode = validate(json);
@@ -81,22 +64,7 @@ public class MaskUtilsDeprecated {
         return writeValueAsString(maskedNode);
     }
 
-    /**
-     * Masks sensitive data in a Java object by converting it to JSON and applying masking rules.
-     * The following masking rules are applied:
-     * <ul>
-     *     <li>String values are replaced with "*****"</li>
-     *     <li>Numbers are replaced with 0 (integers) or 0.0 (floating-point)</li>
-     *     <li>Boolean values are replaced with false</li>
-     *     <li>Null values remain null</li>
-     *     <li>Arrays and objects are traversed recursively</li>
-     * </ul>
-     *
-     * @param obj the object to be masked
-     * @return a JSON string with masked values
-     * @throws NullPointerException if the input object is null
-     * @throws JsonMaskingException if an error occurs during the masking process
-     */
+    @Override
     public String mask(Object obj) {
         Objects.requireNonNull(obj, "Input Object cannot be null");
         JsonNode rootNode = mapper.valueToTree(obj);

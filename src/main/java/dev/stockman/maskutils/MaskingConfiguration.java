@@ -24,10 +24,7 @@ public class MaskingConfiguration {
      * @return true if the field's value should be masked, false if it should be unmasked
      */
     public boolean shouldMask(String fieldName) {
-        if (strategy == Strategy.WHITELIST) {
-            return !fields.contains(fieldName);
-        }
-        return fields.contains(fieldName);
+        return (strategy == Strategy.WHITELIST) != fields.contains(fieldName);
     }
 
     /**
