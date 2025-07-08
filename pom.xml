@@ -15,7 +15,9 @@
         <module>mask-utils-bom</module>
         <module>mask-utils-core</module>
         <module>mask-utils-jackson</module>
+        <module>mask-utils-gson</module>
         <module>mask-utils-test</module>
+        <module>mask-utils-report</module>
     </modules>
 
     <properties>
@@ -52,6 +54,21 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
     </build>
 
 </project>

@@ -16,10 +16,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public abstract class AbstractMaskUtilsComplexSchemaTest {
 
     protected abstract MaskUtils createMaskUtils(MaskingConfiguration maskingConfiguration);
+    protected abstract String cleanJsonify(String json);
+
+    private void jsonAssertEquals(String expected, String actual) {
+        String expectedClean = cleanJsonify(expected);
+        String actualClean = cleanJsonify(actual);
+        assertEquals(expectedClean, actualClean);
+    }
     // language=JSON
     private static final String unmaskedJsonString = """
             {
@@ -231,14 +237,14 @@ public abstract class AbstractMaskUtilsComplexSchemaTest {
         @DisplayName("Using JSON string")
         void testMaskByStringUsing() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
-            assertEquals(maskedJsonString, maskUtils.mask(unmaskedJsonString));
+            jsonAssertEquals(maskedJsonString, maskUtils.mask(unmaskedJsonString));
         }
 
         @Test
         @DisplayName("Using Java objects")
         void testMaskByObjectUsing() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
-            assertEquals(maskedJsonString, maskUtils.mask(sampleUnmaskedObject));
+            jsonAssertEquals(maskedJsonString, maskUtils.mask(sampleUnmaskedObject));
         }
 
     }
@@ -251,14 +257,14 @@ public abstract class AbstractMaskUtilsComplexSchemaTest {
         @DisplayName("Using JSON string")
         void testMaskByStringUsing() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
-            assertEquals(unmaskedJsonString, maskUtils.mask(unmaskedJsonString));
+            jsonAssertEquals(unmaskedJsonString, maskUtils.mask(unmaskedJsonString));
         }
 
         @Test
         @DisplayName("Using Java objects")
         void testMaskByObjectUsing() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
-            assertEquals(unmaskedJsonString, maskUtils.mask(sampleUnmaskedObject));
+            jsonAssertEquals(unmaskedJsonString, maskUtils.mask(sampleUnmaskedObject));
         }
 
     }

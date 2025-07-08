@@ -17,6 +17,7 @@
     <properties>
         <jackson.version>2.19.1</jackson.version>
         <junit.version>5.13.3</junit.version>
+        <gson.version>2.13.1</gson.version>
     </properties>
 
     <dependencyManagement>
@@ -30,6 +31,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>mask-utils-jackson</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>mask-utils-gson</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -48,6 +54,13 @@
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <!-- GSON Dependencies -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
 
             <!-- Test Dependencies -->

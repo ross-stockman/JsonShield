@@ -7,12 +7,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractMaskUtilsTest {
     
     protected abstract MaskUtils createMaskUtils(MaskingConfiguration maskingConfiguration);
+    protected abstract String cleanJsonify(String json);
+
+    private void jsonAssertEquals(String expected, String actual) {
+        String expectedClean = cleanJsonify(expected);
+        String actualClean = cleanJsonify(actual);
+        assertEquals(expectedClean, actualClean);
+    }
+
 
     @Nested
     @DisplayName("Whitelist tests")
@@ -38,7 +45,7 @@ public abstract class AbstractMaskUtilsTest {
         void testStringScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("\"test\"");
-            assertEquals("\"*****\"", maskedJson);
+            jsonAssertEquals("\"*****\"", maskedJson);
         }
 
         @Test
@@ -46,7 +53,7 @@ public abstract class AbstractMaskUtilsTest {
         void testBooleanScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("true");
-            assertEquals("false", maskedJson);
+            jsonAssertEquals("false", maskedJson);
         }
 
         @Test
@@ -54,7 +61,7 @@ public abstract class AbstractMaskUtilsTest {
         void testIntegerScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("1");
-            assertEquals("0", maskedJson);
+            jsonAssertEquals("0", maskedJson);
         }
 
         @Test
@@ -62,7 +69,7 @@ public abstract class AbstractMaskUtilsTest {
         void testFloatScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("1.1");
-            assertEquals("0.0", maskedJson);
+            jsonAssertEquals("0.0", maskedJson);
         }
 
         @Test
@@ -70,7 +77,7 @@ public abstract class AbstractMaskUtilsTest {
         void testNullScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("null");
-            assertEquals("null", maskedJson);
+            jsonAssertEquals("null", maskedJson);
         }
 
         @Test
@@ -78,7 +85,7 @@ public abstract class AbstractMaskUtilsTest {
         void testEmptyObject() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("{ }");
-            assertEquals("{ }", maskedJson);
+            jsonAssertEquals("{ }", maskedJson);
         }
 
         @Test
@@ -86,7 +93,7 @@ public abstract class AbstractMaskUtilsTest {
         void testEmptyArray() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
             String maskedJson = maskUtils.mask("[ ]");
-            assertEquals("[ ]", maskedJson);
+            jsonAssertEquals("[ ]", maskedJson);
         }
 
         @Test
@@ -148,7 +155,7 @@ public abstract class AbstractMaskUtilsTest {
                     }""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
-            assertEquals(output, maskUtils.mask(input));
+            jsonAssertEquals(output, maskUtils.mask(input));
         }
 
         @Test
@@ -264,7 +271,7 @@ public abstract class AbstractMaskUtilsTest {
                     ]""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
-            assertEquals(output, maskUtils.mask(input));
+            jsonAssertEquals(output, maskUtils.mask(input));
         }
 
         @Test
@@ -488,7 +495,7 @@ public abstract class AbstractMaskUtilsTest {
                     ]""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useWhiteListStrategy().build());
-            assertEquals(output, maskUtils.mask(input));
+            jsonAssertEquals(output, maskUtils.mask(input));
         }
     }
 
@@ -516,7 +523,7 @@ public abstract class AbstractMaskUtilsTest {
         void testStringScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("\"test\"");
-            assertEquals("\"test\"", maskedJson);
+            jsonAssertEquals("\"test\"", maskedJson);
         }
 
         @Test
@@ -524,7 +531,7 @@ public abstract class AbstractMaskUtilsTest {
         void testBooleanScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("true");
-            assertEquals("true", maskedJson);
+            jsonAssertEquals("true", maskedJson);
         }
 
         @Test
@@ -532,7 +539,7 @@ public abstract class AbstractMaskUtilsTest {
         void testIntegerScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("1");
-            assertEquals("1", maskedJson);
+            jsonAssertEquals("1", maskedJson);
         }
 
         @Test
@@ -540,7 +547,7 @@ public abstract class AbstractMaskUtilsTest {
         void testFloatScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("1.1");
-            assertEquals("1.1", maskedJson);
+            jsonAssertEquals("1.1", maskedJson);
         }
 
         @Test
@@ -548,7 +555,7 @@ public abstract class AbstractMaskUtilsTest {
         void testNullScalarValue() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("null");
-            assertEquals("null", maskedJson);
+            jsonAssertEquals("null", maskedJson);
         }
 
         @Test
@@ -556,7 +563,7 @@ public abstract class AbstractMaskUtilsTest {
         void testEmptyObject() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("{ }");
-            assertEquals("{ }", maskedJson);
+            jsonAssertEquals("{ }", maskedJson);
         }
 
         @Test
@@ -564,7 +571,7 @@ public abstract class AbstractMaskUtilsTest {
         void testEmptyArray() {
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
             String maskedJson = maskUtils.mask("[ ]");
-            assertEquals("[ ]", maskedJson);
+            jsonAssertEquals("[ ]", maskedJson);
         }
 
         @Test
@@ -599,7 +606,7 @@ public abstract class AbstractMaskUtilsTest {
                     }""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
-            assertEquals(input, maskUtils.mask(input));
+            jsonAssertEquals(input, maskUtils.mask(input));
         }
 
         @Test
@@ -661,7 +668,7 @@ public abstract class AbstractMaskUtilsTest {
                     ]""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
-            assertEquals(input, maskUtils.mask(input));
+            jsonAssertEquals(input, maskUtils.mask(input));
         }
 
         @Test
@@ -777,7 +784,7 @@ public abstract class AbstractMaskUtilsTest {
                     ]""";
 
             MaskUtils maskUtils = createMaskUtils(MaskingConfiguration.useBlackListStrategy().build());
-            assertEquals(input, maskUtils.mask(input));
+            jsonAssertEquals(input, maskUtils.mask(input));
         }
 
     }
