@@ -497,6 +497,42 @@ public abstract class AbstractJsonShieldTest {
             JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useWhiteListStrategy().build());
             jsonAssertEquals(output, maskUtils.mask(input));
         }
+
+        @Test
+        @DisplayName("Specific fields")
+        void testSpecificFields() {
+            //language=json
+            String input = """
+                    {
+                      "f1" : "f1",
+                      "f2" : "f2",
+                      "f3" : "f3",
+                      "f4" : "f4",
+                      "object" : {
+                        "f1" : "f1",
+                        "f2" : "f2",
+                        "f3" : "f3",
+                        "f4" : "f4"
+                      }
+                    }""";
+            //language=json
+            String output = """
+                    {
+                      "f1" : "f1",
+                      "f2" : "*****",
+                      "f3" : "f3",
+                      "f4" : "*****",
+                      "object" : {
+                        "f1" : "f1",
+                        "f2" : "*****",
+                        "f3" : "f3",
+                        "f4" : "*****"
+                      }
+                    }""";
+
+            JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useWhiteListStrategy().addFields("f1", "f3").build());
+            jsonAssertEquals(output, maskUtils.mask(input));
+        }
     }
 
     @Nested
@@ -785,6 +821,42 @@ public abstract class AbstractJsonShieldTest {
 
             JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useBlackListStrategy().build());
             jsonAssertEquals(input, maskUtils.mask(input));
+        }
+
+        @Test
+        @DisplayName("Specific fields")
+        void testSpecificFields() {
+            //language=json
+            String input = """
+                    {
+                      "f1" : "f1",
+                      "f2" : "f2",
+                      "f3" : "f3",
+                      "f4" : "f4",
+                      "object" : {
+                        "f1" : "f1",
+                        "f2" : "f2",
+                        "f3" : "f3",
+                        "f4" : "f4"
+                      }
+                    }""";
+            //language=json
+            String output = """
+                    {
+                      "f1" : "*****",
+                      "f2" : "f2",
+                      "f3" : "*****",
+                      "f4" : "f4",
+                      "object" : {
+                        "f1" : "*****",
+                        "f2" : "f2",
+                        "f3" : "*****",
+                        "f4" : "f4"
+                      }
+                    }""";
+
+            JsonShield maskUtils = createJsonShield(JsonShieldConfiguration.useBlackListStrategy().addFields("f1", "f3").build());
+            jsonAssertEquals(output, maskUtils.mask(input));
         }
 
     }
