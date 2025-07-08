@@ -4,20 +4,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.stockman</groupId>
-    <artifactId>mask-utils-parent</artifactId>
+    <artifactId>jsonshield-parent</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for Mask Utils project</description>
+    <description>Parent POM for JsonShield project</description>
 
     <modules>
-        <module>mask-utils-bom</module>
-        <module>mask-utils-core</module>
-        <module>mask-utils-jackson</module>
-        <module>mask-utils-gson</module>
-        <module>mask-utils-test</module>
-        <module>mask-utils-report</module>
+        <module>jsonshield-bom</module>
+        <module>jsonshield-core</module>
+        <module>jsonshield-jackson</module>
+        <module>jsonshield-gson</module>
+        <module>jsonshield-test</module>
+        <module>jsonshield-report</module>
     </modules>
 
     <properties>
