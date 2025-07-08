@@ -35,6 +35,22 @@ public class MaskUtilsJackson implements MaskUtils {
         this.maskingConfiguration = Objects.requireNonNull(maskingConfiguration, "MaskingConfiguration cannot be null");
     }
 
+    @Override
+    public String mask(String json) {
+        Objects.requireNonNull(json, "Input JSON string cannot be null");
+        JsonNode rootNode = validate(json);
+        JsonNode maskedNode = mask(rootNode);
+        return writeValueAsString(maskedNode);
+    }
+
+    @Override
+    public String mask(Object obj) {
+        Objects.requireNonNull(obj, "Input Object cannot be null");
+        JsonNode rootNode = mapper.valueToTree(obj);
+        JsonNode maskedNode = !rootNode.isValueNode() ? mask(rootNode) : maskingConfiguration.shouldMaskScalarRoot() ? mask(rootNode) : rootNode;
+        return writeValueAsString(maskedNode);
+    }
+
     private JsonNode validate(String json) {
         try {
             return mapper.readTree(json);
@@ -59,23 +75,6 @@ public class MaskUtilsJackson implements MaskUtils {
             throw new JsonMaskingException("Error masking JsonNode", e);
         }
     }
-
-    @Override
-    public String mask(String json) {
-        Objects.requireNonNull(json, "Input JSON string cannot be null");
-        JsonNode rootNode = validate(json);
-        JsonNode maskedNode = mask(rootNode);
-        return writeValueAsString(maskedNode);
-    }
-
-    @Override
-    public String mask(Object obj) {
-        Objects.requireNonNull(obj, "Input Object cannot be null");
-        JsonNode rootNode = mapper.valueToTree(obj);
-        JsonNode maskedNode = !rootNode.isValueNode() ? mask(rootNode) : maskingConfiguration.shouldMaskScalarRoot() ? mask(rootNode) : rootNode;
-        return writeValueAsString(maskedNode);
-    }
-
 
     private JsonNode maskNode(JsonNode node, String parentNodeName) {
         if (node.isNull()) {
