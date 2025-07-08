@@ -84,14 +84,9 @@ public class MaskUtilsJackson implements MaskUtils {
             return maskObject(node);
         } else if (node.isArray()) {
             return maskArray(node, parentNodeName);
-        } else if (node.isBoolean()) {
-            return BooleanNode.valueOf(false);
-        } else if (node.isNumber()) {
-            return maskNumeric(node);
-        } else if (node.isTextual()) {
-            return TextNode.valueOf(MASK);
+        } else if (maskingConfiguration.shouldMaskScalarRoot()) {
+            return maskValueNode(node);
         }
-        // For any other type, return as is
         return node;
     }
 
