@@ -32,9 +32,10 @@ jobs:
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
-      with:
-        directory: ./ # Explicitly set the directory
-        maven-args: -B --file pom.xml # Explicitly set the Maven arguments
-        token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        mkdir -p ${{github.workspace}}/dependency-graph
+        mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.1:tree -DoutputType=dot -DoutputFile=${{github.workspace}}/dependency-graph/graph.dot
+    - name: Submit dependency graph
+      uses: scalacenter/maven-dependency-submission@v1
+
 
