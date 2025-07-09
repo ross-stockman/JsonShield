@@ -15,9 +15,10 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  contents: write
   security-events: write
-#  dependency-graph: write  # Required for dependency submission
+  actions: read
+  checks: write
 
 jobs:
   build:
@@ -38,4 +39,7 @@ jobs:
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Submit Dependency Snapshot
       uses: advanced-security/maven-dependency-submission-action@v5
+      with:
+        token: ${{ github.token }}
+
 
