@@ -31,11 +31,6 @@ jobs:
       run: mvn -B package --file pom.xml
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Update dependency graph
-      run: |
-        mkdir -p ${{github.workspace}}/dependency-graph
-        mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.1:tree -DoutputType=dot -DoutputFile=${{github.workspace}}/dependency-graph/graph.dot
-    - name: Submit dependency graph
-      uses: scalacenter/maven-dependency-submission@v1
-
+    - name: Submit Dependency Snapshot
+      uses: advanced-security/maven-dependency-submission-action@v5
 
