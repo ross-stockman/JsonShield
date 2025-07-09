@@ -14,12 +14,6 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <description>Bill of Materials for JsonShield project</description>
 
-    <properties>
-        <jackson.version>2.19.1</jackson.version>
-        <junit.version>5.13.3</junit.version>
-        <gson.version>2.13.1</gson.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <!-- JsonShield Modules -->

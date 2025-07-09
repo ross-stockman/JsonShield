@@ -67,15 +67,15 @@ Output (masked) JSON:
 
 ## Requirements
 
-- Java 24.0.1
+- Java ${java.version}
 - Maven 3.x
 
 ## Dependencies
 
 Main dependencies include:
-- Jackson 2.19.1
-- Gson 2.13.1
-- JUnit Jupiter 5.13.3
+- Jackson ${jackson.version}
+- Gson ${gson.version}
+- JUnit Jupiter ${junit.version}
 
 ## Getting Started
 
@@ -87,7 +87,7 @@ To use JsonShield in your project, add the BOM to your dependency management:
         <dependency>
             <groupId>dev.stockman</groupId>
             <artifactId>jsonshield-bom</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -180,7 +180,7 @@ Contributions are welcome! Here's how you can help:
 ### Setting Up Development Environment
 
 1. Clone the repository
-2. Install Java 24.0.1
+2. Install Java ${java.version}
 3. Install Maven 3.x
 4. Build the project:
    ```bash
