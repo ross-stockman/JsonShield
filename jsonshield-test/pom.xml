@@ -11,7 +11,7 @@
 
     <artifactId>jsonshield-test</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Shared test cases for JsonShield implementations</description>
+    <description>${project.common.name} shared test cases</description>
 
     <dependencyManagement>
         <dependencies>

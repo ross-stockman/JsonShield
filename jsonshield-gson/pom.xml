@@ -11,7 +11,7 @@
 
     <artifactId>jsonshield-gson</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>GSON implementation for JsonShield project</description>
+    <description>${project.common.name} GSON implementation</description>
 
     <dependencyManagement>
         <dependencies>

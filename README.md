@@ -67,7 +67,7 @@ Output (masked) JSON:
 
 ## Requirements
 
-- Java 24.0.1
+- Java 25
 - Maven 3.x
 
 ## Dependencies
@@ -180,7 +180,7 @@ Contributions are welcome! Here's how you can help:
 ### Setting Up Development Environment
 
 1. Clone the repository
-2. Install Java 24.0.1
+2. Install Java 25
 3. Install Maven 3.x
 4. Build the project:
    ```bash

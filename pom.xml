@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Parent POM for JsonShield project</description>
+    <description>${project.common.name} Parent POM</description>
 
     <modules>
         <module>jsonshield-bom</module>
@@ -21,7 +21,9 @@
     </modules>
 
     <properties>
-        <java.version>24</java.version>
+        <project.common.name>JsonShield</project.common.name>
+        <github.repo>jsonshield</github.repo>
+        <java.version>25</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -149,8 +151,8 @@
 <!--                        <phase>site</phase>-->
                         <configuration>
                             <reportOutputDirectory>${project.basedir}/target/site</reportOutputDirectory>
-                            <doctitle>JsonShield API Documentation (${project.version})</doctitle>
-                            <windowtitle>JsonShield API</windowtitle>
+                            <doctitle>${project.common.name} API Documentation (${project.version})</doctitle>
+                            <windowtitle>${project.common.name} API</windowtitle>
                         </configuration>
                     </execution>
 
@@ -168,17 +170,17 @@
         </license>
     </licenses>
 
-    <url>https://github.com/ross-stockman/jsonshield</url>
+    <url>https://github.com/ross-stockman/${github.repo}</url>
 
     <scm>
-        <connection>scm:git:git://github.com/ross-stockman/jsonshield.git</connection>
-        <developerConnection>scm:git:ssh://github.com:ross-stockman/jsonshield.git</developerConnection>
-        <url>https://github.com/ross-stockman/jsonshield/tree/main</url>
+        <connection>scm:git:git://github.com/ross-stockman/${github.repo}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:ross-stockman/${github.repo}.git</developerConnection>
+        <url>https://github.com/ross-stockman/${github.repo}/tree/main</url>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/ross-stockman/jsonshield/issues</url>
+        <url>https://github.com/ross-stockman/${github.repo}/issues</url>
     </issueManagement>
 
     <developers>

@@ -11,7 +11,7 @@
 
     <artifactId>jsonshield-core</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Core module containing the JsonShield interface and common classes</description>
+    <description>${project.common.name} core module interface and common classes</description>
 
     <dependencyManagement>
         <dependencies>

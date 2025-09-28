@@ -11,7 +11,7 @@
 
     <artifactId>jsonshield-report</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Aggregated reports for JsonShield project</description>
+    <description>${project.common.name} aggregated reports</description>
 
     <dependencies>
         <dependency>

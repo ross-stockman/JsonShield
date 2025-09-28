@@ -11,7 +11,7 @@
 
     <artifactId>jsonshield-jackson</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Jackson implementation of the JsonShield interface</description>
+    <description>${project.common.name} Jackson implementation</description>
 
     <dependencyManagement>
         <dependencies>
