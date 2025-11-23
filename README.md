@@ -74,7 +74,7 @@ Output (masked) JSON:
 
 Main dependencies include:
 - Jackson 2.20.1
-- Gson 2.13.1
+- Gson 2.13.2
 - JUnit Jupiter 5.13.3
 
 ## Getting Started
