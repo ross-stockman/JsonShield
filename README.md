@@ -67,13 +67,13 @@ Output (masked) JSON:
 
 ## Requirements
 
-- Java 25
+- Java 25.0.1
 - Maven 3.x
 
 ## Dependencies
 
 Main dependencies include:
-- Jackson 2.19.1
+- Jackson 2.20.1
 - Gson 2.13.1
 - JUnit Jupiter 5.13.3
 
@@ -180,7 +180,7 @@ Contributions are welcome! Here's how you can help:
 ### Setting Up Development Environment
 
 1. Clone the repository
-2. Install Java 25
+2. Install Java 25.0.1
 3. Install Maven 3.x
 4. Build the project:
    ```bash
