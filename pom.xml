@@ -15,6 +15,7 @@
         <module>jsonshield-bom</module>
         <module>jsonshield-core</module>
         <module>jsonshield-jackson</module>
+        <module>jsonshield-jackson-tools</module>
         <module>jsonshield-gson</module>
         <module>jsonshield-test</module>
         <module>jsonshield-report</module>
@@ -28,6 +29,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.20.1</jackson.version>
+        <jackson.tools.version>3.0.2</jackson.tools.version>
         <junit.version>5.13.3</junit.version>
         <gson.version>2.13.1</gson.version>
     </properties>
